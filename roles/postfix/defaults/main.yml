@@ -1,0 +1,33 @@
+---
+# Packages to install
+postfix_packages:
+    - postfix
+    - cyrus-sasl 
+    - cyrus-sasl-plain
+
+# Postfix configuration items and values 
+postfix_config_items:
+    relayhost: "[smtp.gmail.com]:587"
+    smtp_use_tls: "yes"
+    smtp_sasl_auth_enable: "yes"
+    smtp_sasl_security_options: "noanonymous"
+    smtp_sasl_password_maps: "hash:{{ sasl_password_file }}"
+    smtp_tls_security_level: "encrypt"
+    smtp_tls_CAfile: "/etc/pki/tls/certs/ca-bundle.crt"
+    mydestination: "" 
+    virtual_alias_maps: "hash:/etc/postfix/virtual"
+
+# Virtual alias to forward
+virtual_alias:
+    root: emailaddress@gmail.com
+
+# SASL password files
+sasl_password_file: /etc/postfix/sasl/sasl_passwd
+sasl_password_db_file: /etc/postfix/sasl/sasl_passwd.db
+
+# Service state
+postfix_service_state: started
+postfix_service_enabled: true
+
+    
+...

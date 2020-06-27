@@ -1,0 +1,10 @@
+[switches]
+switch.internal.taurus
+
+[linuxhost]
+linushost.internal.taurus
+
+[windows10]
+windows10.internal.taurus
+
+

@@ -1,0 +1,9 @@
+---
+- hosts: filestorage
+  remote_user: dtate
+  become: yes
+  roles:
+        - nfs
+        - hwwilliams.zfs
+        - postfix
+...

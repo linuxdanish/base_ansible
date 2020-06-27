@@ -1,0 +1,14 @@
+---
+# Directories to add to the exports file
+directories:
+         - "/ironwolf/projects"
+
+vlans:
+  - interface:
+    - name: eth0
+      vids:
+        - 123
+        - 1234
+        - 1245
+
+...

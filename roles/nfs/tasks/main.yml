@@ -1,0 +1,29 @@
+---
+- name: ensure nfs is at the latest version
+  dnf:
+          name: nfs-utils
+          state: latest # noqa 403
+
+- name: deploy exports file
+  template:
+          src: exports
+          dest: /etc/exports
+          owner: root
+          mode: u=rw,g=r,o=r
+  notify:
+          - restart nfs-server
+
+- name: ensure nfs is running
+  service:
+          name: nfs-server
+          state: started
+          enabled: yes
+
+- name: enable nfs in firewall
+  firewalld:
+          service: nfs
+          permanent: yes
+          state: enabled
+          immediate: yes
+
+...

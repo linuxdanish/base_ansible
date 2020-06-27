@@ -1,0 +1,48 @@
+---
+- name: Ensure postfix is installed at the latest version
+  dnf:
+    name: "{{ postfix_packages }}"
+    state: latest # noqa 403
+  notify: restart postfix
+
+- name: configure virtual alias file
+  lineinfile:
+    dest: "/etc/postfix/virtual"
+    line: "{{ item.key }} {{ item.value }}"
+    regexp: "^{{ item.key }}"
+    state: present
+  loop: "{{ virtual_alias|dict2items }}"
+  notify: hash virtual alias
+
+- name: configure postfix main.cf
+  lineinfile:
+    dest: "{{ postfix_config_file }}"
+    line: "{{ item.key }} = {{ item.value }}"
+    regexp: "^{{ item.key }} ="
+  with_items: "{{ postfix_config_items|dict2items }}"
+  notify: restart postfix
+
+- name: Check sasl passwd files exists
+  stat:
+    path: "{{ sasl_password_file }}"
+    get_attributes: yes
+  register: passwdstat
+- debug:
+    msg: "WARNING {{ sasl_password_file }} does not exist or incorrect permissions"
+  when: not passwdstat.stat.exists or passwdstat.stat.mode != 0600
+
+- name: Check sasl passwd db exists
+  stat:
+    path: "{{ sasl_password_db_file }}"
+  register: passwddb
+- debug:
+    msg: "WARNING file {{ sasl_password_db_file }} doesn't exist"
+  when: not passwddb.stat.exists
+
+- name: Ensure postfix is started and enabled
+  service:
+    name: postfix
+    state: "{{ postfix_service_state }}"
+    enabled: "{{ postfix_service_enabled }}"
+
+...

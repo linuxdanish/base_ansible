@@ -1,0 +1,11 @@
+---
+- name: restart postfix
+  service:
+    name: postfix
+    state: restarted
+
+- name: hash virtual alias
+  shell: # noqa 305
+    cmd: /usr/sbin/postmap /etc/postfix/virtual
+
+...
